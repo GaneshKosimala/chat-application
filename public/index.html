@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat-Application</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <h2>Chat-Application</h2>
+        <input type="text" id="text" placeholder="Enter name">
+    </div>
+    <div class="main" id="main">
+        <div class="chat-section" id="chat"></div>
+        <input type="text" id="message-box" placeholder="Type the meassage...">
+        <button class="btn" id="btn">Send</button>
+    </div>
+</body>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    var socket = io();
+   var btn = document.getElementById('btn');
+   socket.emit('newuser',document.getElementById('text').value);
+    btn.addEventListener('click', () => {
+        socket.emit('clientevent',{name:document.getElementById('text').value,content:document.getElementById('message-box').value});
+    })
+    socket.on('chat',data => {
+        var msg = document.getElementById('chat');
+        msg.innerHTML += `<p style='padding:0px 12px'><strong style = 'color:brown'>${data.name}</strong>:${data.content}</p>`;
+    })
+    socket.on('user',data => {
+        var msg = document.getElementById('chat');
+        msg.innerHTML += data;
+    })
+</script>
+</html>
